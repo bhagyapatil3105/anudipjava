@@ -1,0 +1,144 @@
+
+1.Create table
+mysql> create table jobs(job_id int primary key auto_increment  not null,job_title varchar(30),min_salary int,max_salary int check(max_salary>8000));
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> desc jobs;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| job_id     | int         | NO   | PRI | NULL    | auto_increment |
+| job_title  | varchar(30) | YES  |     | NULL    |                |
+| min_salary | int         | YES  |     | NULL    |                |
+| max_salary | int         | YES  |     | NULL    |                |
++------------+-------------+------+-----+---------+----------------+
+4 rows in set (0.03 sec)
+
+
+mysql> create table countries1(county_id int primary key auto_increment not null,country_name varchar(30),region_id int);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> alter table countries1 modify country_name enum('Italy','India','Chaina');
+Query OK, 0 rows affected (0.09 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc countries1;
++--------------+--------------------------------+------+-----+---------+----------------+
+| Field        | Type                           | Null | Key | Default | Extra          |
++--------------+--------------------------------+------+-----+---------+----------------+
+| county_id    | int                            | NO   | PRI | NULL    | auto_increment |
+| country_name | enum('Italy','India','Chaina') | YES  |     | NULL    |                |
+| region_id    | int                            | YES  |     | NULL    |                |
++--------------+--------------------------------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+
+
+
+ create table job_history (employee_id int primary key auto_increment unique, start_date date, end_date date,job_id int, department_id int);
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> desc job_history;
++---------------+------+------+-----+---------+----------------+
+| Field         | Type | Null | Key | Default | Extra          |
++---------------+------+------+-----+---------+----------------+
+| employee_id   | int  | NO   | PRI | NULL    | auto_increment |
+| start_date    | date | YES  |     | NULL    |                |
+| end_date      | date | YES  |     | NULL    |                |
+| job_id        | int  | YES  |     | NULL    |                |
+| department_id | int  | YES  |     | NULL    |                |
++---------------+------+------+-----+---------+----------------+
+5 rows in set (0.01 sec)
+
+2.Alter table
+
+
+create table job_history (employee_id int primary key auto_increment unique, start_date date, end_date date,job_id int, foreign key(job_id)references jobs(job_id), department_id int);
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> desc job_history;
++---------------+------+------+-----+---------+----------------+
+| Field         | Type | Null | Key | Default | Extra          |
++---------------+------+------+-----+---------+----------------+
+| employee_id   | int  | NO   | PRI | NULL    | auto_increment |
+| start_date    | date | YES  |     | NULL    |                |
+| end_date      | date | YES  |     | NULL    |                |
+| job_id        | int  | YES  | MUL | NULL    |                |
+| department_id | int  | YES  |     | NULL    |                |
++---------------+------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+
+mysql> alter table countries rename to county_name;
+Query OK, 0 rows affected (0.02 sec)
+mysql> desc county_name;
++-------------+-------------+------+-----+---------+----------------+
+| Field       | Type        | Null | Key | Default | Extra          |
++-------------+-------------+------+-----+---------+----------------+
+| county_id   | int         | NO   | PRI | NULL    | auto_increment |
+| county_name | varchar(30) | YES  |     | NULL    |                |
+| region_id   | int         | YES  |     | NULL    |                |
++-------------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+
+mysql> alter table county_name change county_id con_id int;
+Query OK, 0 rows affected (0.05 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> desc county_name;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| con_id      | int         | NO   | PRI | NULL    |       |
+| county_name | varchar(30) | YES  |     | NULL    |       |
+| region_id   | int         | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+
+3.DML Statements
+
+mysql>insert into county_name(con_id,county_name,region_id)values(1,'India',4);
+Query OK, 1 row affected (0.00 sec)
+mysql> select * from county_name;
++--------+-------------+-----------+
+| con_id | county_name | region_id |
++--------+-------------+-----------+
+|      1 | India       |         4 |
++--------+-------------+-----------+
+1 row in set (0.00 sec)
+
+mysql> insert into jobs values(1,"manager",40000,45000),(2,"accountant",22000,27000),(3,"assistant",30000,35000),(4,"clerk",8000,10000),(5,"HR",28000,30000);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select *from jobs;
++--------+------------+------------+------------+
+| job_id | job_title  | min_salary | max_salary |
++--------+------------+------------+------------+
+|      1 | manager    |      40000 |      45000 |
+|      2 | accountant |      22000 |      27000 |
+|      3 | assistant  |      30000 |      35000 |
+|      4 | clerk      |       8000 |      10000 |
+|      5 | HR         |      28000 |      30000 |
++--------+------------+------------+------------+
+5 rows in set (0.00 sec)
+
+mysql> update jobs set min_salary=8000 where job_title='HR';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> update jobs set max_salary=40000 where job_title='HR';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+mysql> select * from jobs;
++--------+------------+------------+------------+
+| job_id | job_title  | min_salary | max_salary |
++--------+------------+------------+------------+
+|      1 | manager    |      40000 |      45000 |
+|      2 | accountant |      22000 |      27000 |
+|      3 | assistant  |      30000 |      35000 |
+|      4 | clerk      |       8000 |      10000 |
+|      5 | HR         |       8000 |      40000 |
++--------+------------+------------+------------+
+5 rows in set (0.00 sec)
